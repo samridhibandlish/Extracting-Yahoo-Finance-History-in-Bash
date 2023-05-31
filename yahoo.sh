@@ -84,7 +84,7 @@ while true; do
             show_history
             ;;
         5)
-            echo "Goodbye!"
+            echo "Thank you!"
             exit 0
             ;;
         *)
