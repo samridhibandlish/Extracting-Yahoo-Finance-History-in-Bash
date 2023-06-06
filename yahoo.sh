@@ -1,15 +1,17 @@
 #!/bin/bash
 
-# Function to register a user
+# Registering a user
 register_user() {
+    clear
     read -p "Enter your username: " username
     read -p "Enter your password: " password
     echo "$username $password" >> users.txt
     echo "User registered successfully!"
 }
 
-# Function to log in a user
+# Log in user
 login_user() {
+    clear
     read -p "Enter your username: " username
     read -p "Enter your password: " password
 
@@ -24,14 +26,16 @@ login_user() {
     return 1
 }
 
-# Function to prompt for symbols and fetch data
+# Prompt for symbols and fetch data
 choose_symbols() {
+    clear
     read -p "Enter the symbols you want to track (comma-separated): " symbols
     IFS=',' read -ra symbol_array <<< "$symbols" 
 }
 
-# Function to show history
+# Show history of the symbols
 show_history() {
+    clear
     for symbol in "${symbol_array[@]}"; do
         # Construct the API URL
         api_url="https://query1.finance.yahoo.com/v8/finance/chart/$symbol?interval=1d&range=5d"
@@ -44,28 +48,32 @@ show_history() {
 
         echo "Timestamp: "
         echo "$api_response" | jq -r '.chart.result[0].timestamp as $ts | .chart.result[0].indicators.quote[0] | $ts' | awk '{ printf $1  $2  $3  $4  $5 }'
-	echo 
+        echo 
+
         echo "High: "
         echo "$api_response" | jq -r '.chart.result[0].timestamp as $ts | .chart.result[0].indicators.quote[0] | .high[]' | awk '{ printf $1  $2  $3  $4  $5 } {printf ","} '
-	echo 
+        echo 
+
         echo "Low: "
         echo "$api_response" | jq -r '.chart.result[0].timestamp as $ts | .chart.result[0].indicators.quote[0] | .low[]' | awk '{ printf $1  $2  $3  $4  $5 } {printf ","} '
-	echo 
+        echo 
+
         echo "Close: "
         echo "$api_response" | jq -r '.chart.result[0].timestamp as $ts | .chart.result[0].indicators.quote[0] | .close[]' | awk '{ printf $1  $2  $3  $4  $5 } {printf ","} '
-	echo 
+        echo 
+
         echo "Open: "
         echo "$api_response" | jq -r '.chart.result[0].timestamp as $ts | .chart.result[0].indicators.quote[0] | .open[]' | awk '{ printf $1  $2  $3  $4  $5 } {printf ","} '
-	echo 
+        echo 
+
         echo
     done
 }
 
-# Main script
 while true; do
     echo "1. Register"
     echo "2. Login"
-    echo "3. Choose symbols"
+    echo "3. Fetch data for symbols"
     echo "4. Show history"
     echo "5. Exit"
     read -p "Enter your choice: " choice
@@ -78,7 +86,7 @@ while true; do
             login_user
             ;;
         3)
-            choose_symbols
+            fetch_data
             ;;
         4)
             show_history
